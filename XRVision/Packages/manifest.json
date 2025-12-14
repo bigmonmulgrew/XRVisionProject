@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.meta.xr.sdk.all": "83.0.0",
     "com.unity.feature.development": "1.0.2",
     "com.unity.ide.rider": "3.0.38",
     "com.unity.inputsystem": "1.14.2",
@@ -7,7 +8,7 @@
     "com.unity.mobile.android-logcat": "1.4.6",
     "com.unity.multiplayer.center": "1.0.0",
     "com.unity.nuget.newtonsoft-json": "3.2.2",
-    "com.unity.render-pipelines.universal": "17.0.4",
+    "com.unity.render-pipelines.universal": "17.2.0",
     "com.unity.test-framework": "1.6.0",
     "com.unity.xr.androidxr-openxr": "1.1.0",
     "com.unity.xr.arfoundation": "6.3.1",
