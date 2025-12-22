@@ -7,7 +7,6 @@ using UnityEngine.XR.OpenXR.NativeTypes;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using UnityEngine.XR.Interaction.Toolkit.Samples.StarterAssets;
-using UnityEngine.Events;
 
 namespace UnityEngine.XR.Templates.MR
 {
@@ -63,13 +62,6 @@ namespace UnityEngine.XR.Templates.MR
             get => m_AndroidXRSettings;
             set => m_AndroidXRSettings = value;
         }
-
-        bool m_HandRemovalEnabled = false;
-
-        [SerializeField]
-        UnityEvent<bool> m_OnHandOcclusionChanged = new UnityEvent<bool>();
-
-        public UnityEvent<bool> onHandOcclusionChanged => m_OnHandOcclusionChanged;
 
         AROcclusionManager m_AROcclusionManager;
         ARShaderOcclusion m_ARShaderOcclusion;
@@ -132,14 +124,6 @@ namespace UnityEngine.XR.Templates.MR
                 case XRPlatformType.OpenXRMeta:
                     m_QuestSettings.SetActive(true);
                     m_AndroidXRSettings.SetActive(false);
-#if META_OCCLUSION_AVAILABLE
-                    var subsystem = m_AROcclusionManager.subsystem as MetaOpenXROcclusionSubsystem;
-                    m_HandRemovalEnabled = (subsystem != null && subsystem.isHandRemovalSupported == Supported.Supported && subsystem.isHandRemovalEnabled);
-                    if (m_OnHandOcclusionChanged != null)
-                    {
-                        m_OnHandOcclusionChanged.Invoke(m_HandRemovalEnabled);
-                    }
-#endif
                     break;
                 case XRPlatformType.OpenXRAndroidXR:
                     m_QuestSettings.SetActive(false);
@@ -224,22 +208,11 @@ namespace UnityEngine.XR.Templates.MR
         {
 #if META_OCCLUSION_AVAILABLE
             var subsystem = m_AROcclusionManager.subsystem as MetaOpenXROcclusionSubsystem;
-            if (subsystem != null && subsystem.isHandRemovalSupported == Supported.Supported)
+            var result = subsystem.TrySetHandRemovalEnabled(isEnabled);
+            if (result.IsError())
             {
-                var result = subsystem.TrySetHandRemovalEnabled(isEnabled);
-                if (result.IsError())
-                {
-                    // Handle error
-                    Debug.LogWarning("Error setting hand removal enabled: " + result.ToString());
-                }
-                else
-                {
-                    m_HandRemovalEnabled = subsystem.isHandRemovalEnabled;
-                    if (m_OnHandOcclusionChanged != null)
-                    {
-                        m_OnHandOcclusionChanged.Invoke(m_HandRemovalEnabled);
-                    }
-                }
+                // Handle error
+                Debug.LogWarning("Error setting hand removal enabled: " + result.ToString());
             }
 #endif
         }

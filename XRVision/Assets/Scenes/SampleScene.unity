@@ -1298,8 +1298,6 @@ MonoBehaviour:
   m_StartingHoverFilters: []
   m_StartingSelectFilters: []
   m_StartingInteractionStrengthFilters: []
-  m_AutoFindParentInteractableInHierarchy: 0
-  m_ParentInteractableObject: {fileID: 0}
   m_AttachTransform: {fileID: 0}
   m_SecondaryAttachTransform: {fileID: 0}
   m_UseDynamicAttach: 1
@@ -2140,30 +2138,6 @@ PrefabInstance:
       propertyPath: m_AndroidXRSettings
       value: 
       objectReference: {fileID: 3375922771489076480}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1871562524}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: SetIsOnWithoutNotify
-      objectReference: {fileID: 0}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: UnityEngine.UI.Toggle, UnityEngine.UI
-      objectReference: {fileID: 0}
-    - target: {fileID: 7460734852215867547, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
-      propertyPath: m_OnHandOcclusionChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 9101303414712244912, guid: 86a5bf68cb51f4e44bd3893bd22a2ba7, type: 3}
       propertyPath: m_OnARPassthroughFeatureChanged.m_PersistentCalls.m_Calls.Array.size
       value: 2
@@ -2590,17 +2564,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b628c55da6fc2bb4f88b18dff59bfb91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1871562524 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8596793768576461366, guid: b6d57cedc6a73c94aad8ce006a26b41b, type: 3}
-  m_PrefabInstance: {fileID: 3375922771489076479}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &1891673207 stripped

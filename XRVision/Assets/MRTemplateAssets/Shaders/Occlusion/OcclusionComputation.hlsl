@@ -1,7 +1,4 @@
-#ifndef OCCLUSION_COMPUTATION_INCLUDED
-#define OCCLUSION_COMPUTATION_INCLUDED
-
-#include "Packages/com.unity.xr.arfoundation/Assets/Shaders/Utils.hlsl"
+#include "Utils.hlsl"
 
 TEXTURE2D(_EnvironmentConfidenceTexture);
 SAMPLER(sampler_EnvironmentConfidenceTexture);
@@ -15,7 +12,12 @@ SAMPLER(sampler_EnvironmentDepthTexturePreprocessed);
 float4 _EnvironmentDepthTexturePreprocessed_TexelSize;
 
 float4x4 _EnvironmentDepthProjectionMatrices[2];
-int _IsOcclusionOn = 1;
+
+void SetOcclusionVertOutputs(float4 positionOS, inout float4 positionCS, inout float4 objectPositionWS)
+{
+    objectPositionWS = mul(unity_ObjectToWorld, float4(positionOS.xyz, 1.0));
+    positionCS = mul(UNITY_MATRIX_VP, objectPositionWS);
+}
 
 float SampleEnvironmentDepth(const float2 uv)
 {
@@ -120,19 +122,12 @@ float ComputePixelVisibility(const float4 environmentDepth, const float linearSc
         return GetToleranceBasedPixelVisibility(environmentDepth.x, linearSceneDepth);
     #endif
 
-    return 1.0f;
+    return 1;
 }
 
-void SetOcclusion_float(const float3 positionWS, float4 color, out float4 resultColor)
+void SetOcclusion(float4 objectPositionWS, inout float4 color)
 {
-    resultColor = color;
-
-    if (_IsOcclusionOn == 0)
-    {
-        return;
-    }
-
-    const float4 clipSpaceDepthRelativePos = mul(_EnvironmentDepthProjectionMatrices[unity_StereoEyeIndex], float4(positionWS, 1.0f));
+    const float4 clipSpaceDepthRelativePos = mul(_EnvironmentDepthProjectionMatrices[unity_StereoEyeIndex], objectPositionWS);
     const float2 uv = (clipSpaceDepthRelativePos.xy / clipSpaceDepthRelativePos.w + 1.0f) * 0.5f;
 
     if (all(uv < 0.0) || all(uv > 1.0))
@@ -144,8 +139,6 @@ void SetOcclusion_float(const float3 positionWS, float4 color, out float4 result
     const float sceneDepthNDC = clipSpaceDepthRelativePos.z / clipSpaceDepthRelativePos.w;
     const float linearSceneDepth = LinearizeDepth(sceneDepthNDC);
 
-    resultColor.a *= ComputePixelVisibility(environmentDepth, linearSceneDepth);
-    resultColor.rgb *= resultColor.a;
+    color.a *= ComputePixelVisibility(environmentDepth, linearSceneDepth);
+    color.rgb *= color.a;
 }
-
-#endif

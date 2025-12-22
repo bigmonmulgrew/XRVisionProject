@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 28
-  productGUID: 2d3d8a86f0f3d0a4a9f4f14f845b5c4c
+  productGUID: 02b628cc416c5fd43b8bc1ee36d52be2
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -143,7 +143,7 @@ PlayerSettings:
   loadStoreDebugModeEnabled: 0
   visionOSBundleVersion: 1.0
   tvOSBundleVersion: 1.0
-  bundleVersion: 2.2.1
+  bundleVersion: 2.2.0
   preloadedAssets:
   - {fileID: 11400000, guid: f8a442de0c8906f4d9c00184993fc289, type: 2}
   - {fileID: 0}
@@ -258,7 +258,7 @@ PlayerSettings:
   appleEnableProMotion: 0
   shaderPrecisionModel: 0
   clonedFromGUID: 14e3da668dfd3496fb0ecd9272fcff02
-  templatePackageId: com.unity.template.mixed-reality@2.2.1
+  templatePackageId: com.unity.template.mixed-reality@2.2.0
   templateDefaultScene: Assets/Scenes/SampleScene.unity
   useCustomMainManifest: 0
   useCustomLauncherManifest: 0
@@ -996,10 +996,10 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 1
   windowsGamepadBackendHint: 0
-  cloudProjectId: cc28ea16-463f-4bbb-864e-03765e7a8532
+  cloudProjectId: f14b933e-e4df-43fd-b26f-14ee2ac6ceff
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: XRVision
+  projectName: XRVision 2025-12-21_22-44-47
   organizationId: bigmonmulgrew
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0

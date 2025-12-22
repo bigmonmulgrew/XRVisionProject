@@ -1,6 +1,4 @@
-using System.Collections.Generic;
 using UnityEngine.Events;
-using UnityEngine.UIElements;
 using UnityEngine.XR.ARFoundation;
 
 namespace UnityEngine.XR.Templates.MR
@@ -123,12 +121,6 @@ namespace UnityEngine.XR.Templates.MR
         bool m_BoundingBoxManagerEnabled;
         bool m_PlaneManagerEnabled;
 
-        readonly List<ARPlane> m_ARPlanes = new List<ARPlane>();
-        readonly Dictionary<ARPlane, ARPlaneMeshVisualizer> m_ARPlaneMeshVisualizers = new Dictionary<ARPlane, ARPlaneMeshVisualizer>();
-
-        readonly List<ARBoundingBox> m_ARBoundingBoxes = new List<ARBoundingBox>();
-        readonly Dictionary<ARBoundingBox, ARBoundingBoxDebugVisualizer> m_ARBoundingBoxVisualizers = new Dictionary<ARBoundingBox, ARBoundingBoxDebugVisualizer>();
-
         /// <summary>
         /// Functionally turns AR Passthrough on and off in the scene.
         /// </summary>
@@ -158,11 +150,9 @@ namespace UnityEngine.XR.Templates.MR
             {
                 m_PlaneManager.enabled = m_PlaneManagerEnabled;
                 m_PlaneManager.SetTrackablesActive(m_PlaneManagerEnabled);
-                m_PlaneManager.trackablesChanged.AddListener(OnPlaneChanged);
             }
             else
             {
-                m_PlaneManager.trackablesChanged.RemoveListener(OnPlaneChanged);
                 m_PlaneManager.SetTrackablesActive(m_PlaneManagerEnabled);
                 m_PlaneManager.enabled = m_PlaneManagerEnabled;
             }
@@ -181,13 +171,13 @@ namespace UnityEngine.XR.Templates.MR
             m_OnARPlaneFeatureVisualizationChanged?.Invoke(m_PlaneVisualsEnabled);
 
             var trackables = m_PlaneManager.trackables;
-            if (trackables.count != m_ARPlanes.Count)
+            foreach (var trackable in trackables)
             {
-                RefreshAllPlanes();
-            }
-            else
-            {
-                foreach (var visualizer in m_ARPlaneMeshVisualizers.Values)
+                if (trackable.TryGetComponent(out FadePlaneMaterial fader))
+                {
+                    fader.FadePlane(m_PlaneVisualsEnabled);
+                }
+                if (trackable.TryGetComponent(out ARPlaneMeshVisualizer visualizer))
                 {
                     visualizer.enabled = m_PlaneVisualsEnabled;
                 }
@@ -210,11 +200,9 @@ namespace UnityEngine.XR.Templates.MR
             {
                 m_BoundingBoxManager.enabled = m_BoundingBoxManagerEnabled;
                 m_BoundingBoxManager.SetTrackablesActive(m_BoundingBoxManagerEnabled);
-                m_BoundingBoxManager.trackablesChanged.AddListener(OnBoundingBoxesChanged);
             }
             else
             {
-                m_BoundingBoxManager.trackablesChanged.RemoveListener(OnBoundingBoxesChanged);
                 m_BoundingBoxManager.SetTrackablesActive(m_BoundingBoxManagerEnabled);
                 m_BoundingBoxManager.enabled = m_BoundingBoxManagerEnabled;
             }
@@ -233,13 +221,9 @@ namespace UnityEngine.XR.Templates.MR
             m_OnARBoundingBoxFeatureVisualizationChanged?.Invoke(m_BoundingBoxVisualsEnabled);
 
             var trackables = m_BoundingBoxManager.trackables;
-            if (trackables.count != m_ARBoundingBoxes.Count)
+            foreach (var trackable in trackables)
             {
-                RefreshAllBoundingBoxes();
-            }
-            else
-            {
-                foreach (var visualizer in m_ARBoundingBoxVisualizers.Values)
+                if (trackable.TryGetComponent(out ARBoundingBoxDebugVisualizer visualizer))
                 {
                     visualizer.enabled = m_BoundingBoxVisualsEnabled;
                     visualizer.ShowDebugInfoCanvas(m_BoundingBoxVisualsEnabled && m_BoundingBoxDebugInfoEnabled);
@@ -269,116 +253,6 @@ namespace UnityEngine.XR.Templates.MR
                 if (trackable.TryGetComponent(out ARBoundingBoxDebugVisualizer visualizer))
                 {
                     visualizer.ShowDebugInfoCanvas(m_BoundingBoxDebugInfoEnabled);
-                }
-            }
-        }
-
-        void OnPlaneChanged(ARTrackablesChangedEventArgs<ARPlane> eventArgs)
-        {
-            if (eventArgs.added.Count > 0)
-            {
-                foreach (var plane in eventArgs.added)
-                {
-                    m_ARPlanes.Add(plane);
-                    if (plane.TryGetComponent<ARPlaneMeshVisualizer>(out var visualizer))
-                    {
-                        m_ARPlaneMeshVisualizers.Add(plane, visualizer);
-                        visualizer.enabled = m_PlaneVisualsEnabled;
-                    }
-                }
-            }
-
-            if (eventArgs.removed.Count > 0)
-            {
-                foreach (var plane in eventArgs.removed)
-                {
-                    var planeGameObject = plane.Value;
-                    if (planeGameObject == null)
-                        continue;
-
-                    if (m_ARPlanes.Contains(planeGameObject))
-                        m_ARPlanes.Remove(planeGameObject);
-
-                    if (m_ARPlaneMeshVisualizers.ContainsKey(planeGameObject))
-                        m_ARPlaneMeshVisualizers.Remove(planeGameObject);
-                }
-            }
-
-            // Fallback if the counts do not match after an update
-            if (m_PlaneManager.trackables.count != m_ARPlanes.Count)
-            {
-                RefreshAllPlanes();
-            }
-        }
-
-        void RefreshAllPlanes()
-        {
-            m_ARPlanes.Clear();
-            m_ARPlaneMeshVisualizers.Clear();
-
-            foreach (var plane in m_PlaneManager.trackables)
-            {
-                m_ARPlanes.Add(plane);
-                if (plane.TryGetComponent<ARPlaneMeshVisualizer>(out var visualizer))
-                {
-                    m_ARPlaneMeshVisualizers.Add(plane, visualizer);
-                    visualizer.enabled = m_PlaneVisualsEnabled;
-                }
-            }
-        }
-
-        void OnBoundingBoxesChanged(ARTrackablesChangedEventArgs<ARBoundingBox> eventArgs)
-        {
-            if (eventArgs.added.Count > 0)
-            {
-                foreach (var box in eventArgs.added)
-                {
-                    m_ARBoundingBoxes.Add(box);
-                    if (box.TryGetComponent<ARBoundingBoxDebugVisualizer>(out var visualizer))
-                    {
-                        m_ARBoundingBoxVisualizers.Add(box, visualizer);
-                        visualizer.enabled = m_BoundingBoxVisualsEnabled;
-                        visualizer.ShowDebugInfoCanvas(m_BoundingBoxDebugInfoEnabled && m_BoundingBoxDebugInfoEnabled);
-                    }
-                }
-            }
-
-            if (eventArgs.removed.Count > 0)
-            {
-                foreach (var box in eventArgs.removed)
-                {
-                    var boxGameObject = box.Value;
-                    if (boxGameObject == null)
-                        continue;
-
-                    if (m_ARBoundingBoxes.Contains(boxGameObject))
-                        m_ARBoundingBoxes.Remove(boxGameObject);
-
-                    if (m_ARBoundingBoxVisualizers.ContainsKey(boxGameObject))
-                        m_ARBoundingBoxVisualizers.Remove(boxGameObject);
-                }
-            }
-
-            // Fallback if the counts do not match after an update
-            if (m_BoundingBoxManager.trackables.count != m_ARBoundingBoxes.Count)
-            {
-                RefreshAllBoundingBoxes();
-            }
-        }
-
-        void RefreshAllBoundingBoxes()
-        {
-            m_ARBoundingBoxes.Clear();
-            m_ARBoundingBoxVisualizers.Clear();
-
-            foreach (var box in m_BoundingBoxManager.trackables)
-            {
-                m_ARBoundingBoxes.Add(box);
-                if (box.TryGetComponent<ARBoundingBoxDebugVisualizer>(out var visualizer))
-                {
-                    m_ARBoundingBoxVisualizers.Add(box, visualizer);
-                    visualizer.enabled = m_BoundingBoxVisualsEnabled;
-                    visualizer.ShowDebugInfoCanvas(m_BoundingBoxDebugInfoEnabled && m_BoundingBoxDebugInfoEnabled);
                 }
             }
         }
